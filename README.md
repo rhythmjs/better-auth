@@ -1,6 +1,16 @@
 # @rhythmjs/better-auth
 
-[Better Auth](https://better-auth.com) for Rhythm on Bun. Three plain pieces, each taking the `auth` instance you built:
+[Better Auth](https://better-auth.com) for Rhythm on Bun. The module mounts the handler, and two middlewares read the session. You build the `auth` instance.
+
+## Install
+
+```sh
+bun add better-auth @rhythmjs/better-auth
+```
+
+`@rhythmjs/http` and `@rhythmjs/security` come with the package, so there is nothing else to install. `@rhythmjs/rhythm` and `@rhythmjs/router` are peers: use the copy your app already has.
+
+## Usage
 
 ```ts
 import { betterAuthModule, requireSession } from "@rhythmjs/better-auth";
@@ -15,7 +25,7 @@ const app = new Rhythm<RhythmHttpContext>()
 - `withSession()` is the soft version: same lookup, but it always continues and sets `ctx.session` and `ctx.user` to the session or `null`.
 - `requireSession()` takes nothing and uses `ctx.auth`: it calls `auth.api.getSession`, answers 401 without a session, and otherwise sets `ctx.session` and `ctx.user`. Their types are Better Auth's base session and user; for plugin or custom fields call `ctx.auth.api.getSession` yourself, which is fully typed.
 - `authHandler({ auth, path? })` is the bare mounting middleware, for use without the module.
-- `cors` and `CorsOptions` are re-exported unchanged from `@rhythmjs/security/cors`, so there is one import. Configure it yourself; for cookie sessions across origins that means `cors({ origin, credentials: true })`. Put it before the module so preflight requests are answered first.
+- `cors` and `CorsOptions` are re-exported unchanged from `@rhythmjs/security/cors`, so you import it from here and need no separate `@rhythmjs/security`. Configure it yourself; for cookie sessions across origins that means `cors({ origin, credentials: true })`. Put it before the module so preflight requests are answered first.
 
 ## Database
 

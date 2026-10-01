@@ -4,11 +4,13 @@
   "workspaces": {
     "": {
       "name": "@rhythmjs/better-auth",
-      "devDependencies": {
+      "dependencies": {
         "@rhythmjs/http": "^0.0.8",
+        "@rhythmjs/security": "^0.0.6",
+      },
+      "devDependencies": {
         "@rhythmjs/rhythm": "0.0.12",
         "@rhythmjs/router": "^0.0.12",
-        "@rhythmjs/security": "^0.0.6",
         "@types/bun": "^1.2.0",
         "@types/node": "^26.6.3",
         "better-auth": "^1.7.7",
@@ -17,10 +19,8 @@
         "typescript": "^7.0.2",
       },
       "peerDependencies": {
-        "@rhythmjs/http": "^0.0.8",
         "@rhythmjs/rhythm": "^0.0.11",
         "@rhythmjs/router": "^0.0.11",
-        "@rhythmjs/security": "^0.0.6",
         "better-auth": "*",
       },
     },
