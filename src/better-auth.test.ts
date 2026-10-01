@@ -11,6 +11,7 @@ const auth = betterAuth({
   database: new Database(":memory:"),
   baseURL: "http://localhost",
   secret: "test-secret-test-secret-test-secret-1234",
+  logger: { disabled: true },
   emailAndPassword: { enabled: true },
 });
 
@@ -104,6 +105,7 @@ describe("betterAuthModule.forRootAsync", () => {
       database,
       baseURL: "http://localhost",
       secret: "test-secret-test-secret-test-secret-1234",
+      logger: { disabled: true },
       emailAndPassword: { enabled: true },
     });
     await (await getMigrations(created.options)).runMigrations();
@@ -142,6 +144,7 @@ describe("betterAuthModule.forRootAsync", () => {
       baseURL: "http://localhost",
       basePath: "/custom",
       secret: "test-secret-test-secret-test-secret-1234",
+      logger: { disabled: true },
     });
     await (await getMigrations(custom.options)).runMigrations();
     const app = toFetchHandler(
