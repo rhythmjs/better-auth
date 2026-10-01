@@ -7,6 +7,11 @@ export { cors, type CorsOptions } from "@rhythmjs/security/cors";
 
 export interface BetterAuthOptions<TAuth extends Auth<any>> {
   auth: TAuth;
+  path?: string | undefined;
+}
+
+export interface BetterAuthAsyncOptions<TAuth extends Auth<any>, TDeps extends object> {
+  useFactory: (deps: RhythmHttpContext & TDeps) => TAuth | Promise<TAuth>;
   path?: string;
 }
 
@@ -28,6 +33,28 @@ export const betterAuthModule = {
     return new Rhythm<RhythmHttpContext>({ type: "module", name: "better-auth" })
       .provide(() => ({ auth: options.auth }))
       .use(authHandler(options));
+  },
+  forRootAsync<TAuth extends Auth<any>, TDeps extends object = {}>(options: BetterAuthAsyncOptions<TAuth, TDeps>) {
+    let pending: Promise<TAuth> | undefined;
+    let handler: Middleware<RhythmHttpContext> | undefined;
+
+    const resolve = (deps: RhythmHttpContext & TDeps): Promise<TAuth> => {
+      if (!pending) {
+        const created = Promise.resolve().then(() => options.useFactory(deps));
+        created.catch(() => {
+          if (pending === created) pending = undefined;
+        });
+        pending = created;
+      }
+      return pending;
+    };
+
+    return new Rhythm<RhythmHttpContext & TDeps>({ type: "module", name: "better-auth" })
+      .use(derive(async (ctx: RhythmHttpContext & TDeps) => ({ auth: await resolve(ctx) })))
+      .use(async (ctx, next) => {
+        handler ??= authHandler({ auth: ctx.auth, path: options.path });
+        await handler(ctx, next);
+      });
   },
 };
 

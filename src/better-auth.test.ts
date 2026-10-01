@@ -96,3 +96,77 @@ describe("betterAuthModule", () => {
     expect(await res.json()).toEqual({ user: null, session: null });
   });
 });
+
+describe("betterAuthModule.forRootAsync", () => {
+  test("builds auth from the context it is registered into, once, and mounts its handler", async () => {
+    const database = new Database(":memory:");
+    const created = betterAuth({
+      database,
+      baseURL: "http://localhost",
+      secret: "test-secret-test-secret-test-secret-1234",
+      emailAndPassword: { enabled: true },
+    });
+    await (await getMigrations(created.options)).runMigrations();
+    let calls = 0;
+    let received: unknown;
+    const app = toFetchHandler(
+      new Rhythm<RhythmHttpContext>()
+        .provide(() => ({ database }))
+        .register(
+          betterAuthModule.forRootAsync({
+            useFactory: ({ database }: RhythmHttpContext & { database: Database }) => {
+              calls++;
+              received = database;
+              return created;
+            },
+          }),
+          (m) => ({ auth: m.auth }),
+        )
+        .use(withSession())
+        .use((ctx) => ctx.json({ hasAuth: typeof ctx.auth.handler, user: ctx.user })),
+    );
+
+    const res = await app(new Request("http://localhost/x"));
+    await app(new Request("http://localhost/y"));
+    const authRes = await app(new Request("http://localhost/api/auth/ok"));
+
+    expect(await res.json()).toEqual({ hasAuth: "function", user: null });
+    expect(authRes.status).toBe(200);
+    expect(received).toBe(database);
+    expect(calls).toBe(1);
+  });
+
+  test("supports an async factory and mounts at the auth's own basePath", async () => {
+    const custom = betterAuth({
+      database: new Database(":memory:"),
+      baseURL: "http://localhost",
+      basePath: "/custom",
+      secret: "test-secret-test-secret-test-secret-1234",
+    });
+    await (await getMigrations(custom.options)).runMigrations();
+    const app = toFetchHandler(
+      new Rhythm<RhythmHttpContext>().register(betterAuthModule.forRootAsync({ useFactory: async () => custom })),
+    );
+
+    expect(await (await app(new Request("http://localhost/custom/ok"))).json()).toEqual({ ok: true });
+    expect(await (await app(new Request("http://localhost/api/auth/ok"))).text()).toBe("");
+  });
+
+  test("a failing factory is retried on the next request", async () => {
+    let calls = 0;
+    const app = toFetchHandler(
+      new Rhythm<RhythmHttpContext>().register(
+        betterAuthModule.forRootAsync({
+          useFactory: () => {
+            if (++calls === 1) throw new Error("not ready");
+            return auth;
+          },
+        }),
+      ),
+    );
+
+    await expect(app(new Request("http://localhost/api/auth/ok"))).rejects.toThrow();
+    expect((await app(new Request("http://localhost/api/auth/ok"))).status).toBe(200);
+    expect(calls).toBe(2);
+  });
+});

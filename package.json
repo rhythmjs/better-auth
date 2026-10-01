@@ -1,6 +1,6 @@
 {
   "name": "@rhythmjs/better-auth",
-  "version": "0.0.2",
+  "version": "0.0.3",
   "description": "Better Auth for Rhythm on Bun: betterAuthModule.forRoot({ auth }) mounts auth.handler and derives session and user onto the context; requireSession guards routes.",
   "keywords": [
     "auth",
