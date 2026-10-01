@@ -1,0 +1,65 @@
+{
+  "name": "@rhythmjs/better-auth",
+  "version": "0.0.1",
+  "description": "Better Auth for Rhythm on Bun: betterAuthModule.forRoot({ auth }) mounts auth.handler and derives session and user onto the context; requireSession guards routes.",
+  "keywords": [
+    "auth",
+    "authentication",
+    "better-auth",
+    "bun",
+    "rhythm",
+    "session"
+  ],
+  "license": "ISC",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/rhythmjs/better-auth.git"
+  },
+  "files": [
+    "dist"
+  ],
+  "type": "module",
+  "sideEffects": false,
+  "exports": {
+    ".": {
+      "types": "./dist/better-auth.d.ts",
+      "default": "./dist/better-auth.js"
+    },
+    "./package.json": "./package.json"
+  },
+  "publishConfig": {
+    "access": "public"
+  },
+  "scripts": {
+    "build": "bun build src/better-auth.ts --outdir dist --root src --format esm --target bun --packages external && tsc -p tsconfig.build.json",
+    "prepublishOnly": "bun run check && bun test && bun run build",
+    "typecheck": "tsc --noEmit",
+    "test": "bun test",
+    "lint": "oxlint src",
+    "fmt": "prettier --write \"src/**/*.ts\" \"*.json\"",
+    "fmt:check": "prettier --check \"src/**/*.ts\" \"*.json\"",
+    "check": "bun run fmt:check && bun run lint && bun run typecheck"
+  },
+  "devDependencies": {
+    "@rhythmjs/http": "^0.0.8",
+    "@rhythmjs/rhythm": "0.0.12",
+    "@rhythmjs/router": "^0.0.12",
+    "@rhythmjs/security": "^0.0.6",
+    "@types/bun": "^1.2.0",
+    "@types/node": "^26.6.3",
+    "better-auth": "^1.7.7",
+    "oxlint": "^1.0.0",
+    "prettier": "^3.5.0",
+    "typescript": "^7.0.2"
+  },
+  "peerDependencies": {
+    "@rhythmjs/http": "^0.0.8",
+    "@rhythmjs/rhythm": "^0.0.11",
+    "@rhythmjs/router": "^0.0.11",
+    "@rhythmjs/security": "^0.0.6",
+    "better-auth": "*"
+  },
+  "engines": {
+    "bun": ">=1.2.0"
+  }
+}
