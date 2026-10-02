@@ -6,11 +6,11 @@
       "name": "@rhythmjs/better-auth",
       "dependencies": {
         "@rhythmjs/http": "^0.0.8",
-        "@rhythmjs/security": "^0.0.6",
+        "@rhythmjs/security": "^0.0.7",
       },
       "devDependencies": {
-        "@rhythmjs/rhythm": "0.0.12",
-        "@rhythmjs/router": "^0.0.12",
+        "@rhythmjs/rhythm": "0.0.14",
+        "@rhythmjs/router": "^0.0.13",
         "@types/bun": "^1.2.0",
         "@types/node": "^26.6.3",
         "better-auth": "^1.7.7",
@@ -19,8 +19,8 @@
         "typescript": "^7.0.2",
       },
       "peerDependencies": {
-        "@rhythmjs/rhythm": "^0.0.11",
-        "@rhythmjs/router": "^0.0.11",
+        "@rhythmjs/rhythm": ">=0.0.14",
+        "@rhythmjs/router": ">=0.0.13",
         "better-auth": "*",
       },
     },
@@ -90,11 +90,11 @@
 
     "@rhythmjs/http": ["@rhythmjs/http@0.0.8", "", { "dependencies": { "rou3": "^0.11.0" }, "peerDependencies": { "@rhythmjs/rhythm": "^0.0.13", "@rhythmjs/router": "^0.0.12", "i18next": "*" }, "optionalPeers": ["i18next"] }, "sha512-dBvici1C6vZ4esCxZOmN9lel9n14Fm3qUJQnRtziRn4lpzucM3uHRJx4eu1Uqa7Gkzazhy/DoGrrmeewmxnIwQ=="],
 
-    "@rhythmjs/rhythm": ["@rhythmjs/rhythm@0.0.12", "", {}, "sha512-SydCWn3G9Sxpcw9jM1Qezkq9pZ6+jWj9KXcMgJAAZKaKoklFrjVN/dlt5TH1MlIaxqsE49++Vinj0ogHU/o0lg=="],
+    "@rhythmjs/rhythm": ["@rhythmjs/rhythm@0.0.14", "", {}, "sha512-MFpBWkxW8xPxTL2F0sFLgvtB9FLurTIL7vRZWu/Vj+/23MC+Q85gNdoahn+2Rvi7s0XceCrv3wrZDJqbR1uQVA=="],
 
-    "@rhythmjs/router": ["@rhythmjs/router@0.0.12", "", { "dependencies": { "@rhythmjs/rhythm": "0.0.12", "rou3": "^0.11.0" } }, "sha512-rrPr9zZ4G1BMj0aqQE/OLORpbOEaONNZnNQAIsE0mR5LglbRqavaT/FvU2ic3HG3AN0wd0qxjW/Iilq5TP0pHQ=="],
+    "@rhythmjs/router": ["@rhythmjs/router@0.0.13", "", { "dependencies": { "@rhythmjs/rhythm": "0.0.14", "rou3": "^0.11.0" } }, "sha512-vZIZIvk08tgPHTsEjMKrmG124AbgbMjVstQHkHUmwk0kVWBiAp/kRvcLY5NgO8RVrq2ah/RAgWFfWIdj3eHByQ=="],
 
-    "@rhythmjs/security": ["@rhythmjs/security@0.0.6", "", { "peerDependencies": { "@rhythmjs/rhythm": "^0.0.11", "@rhythmjs/router": "^0.0.11" } }, "sha512-ZFs9zWRgiKzAWiFgH3GUl6L35JUO8Njxzt2IiELjkG+1WACxMwpLjShXAh9aZo0w6yme3sDEPnDiHCrp+1PnEg=="],
+    "@rhythmjs/security": ["@rhythmjs/security@0.0.7", "", { "peerDependencies": { "@rhythmjs/rhythm": "^0.0.14", "@rhythmjs/router": "^0.0.13" } }, "sha512-PRSz6DObIi4Pmlk1uWFsSPbNPz2v3PEjZl6wdVVjn5TszTAXbY/ay4kJq3RLPRgMXnqtIC5BgIucekAMIrL8Ag=="],
 
     "@standard-schema/spec": ["@standard-schema/spec@1.1.0", "", {}, "sha512-l2aFy5jALhniG5HgqrD6jXLi/rUWrKvqN/qJx6yoJsgKhblVd+iqqU4RCXavm/jPityDo5TCvKMnpjKnOriy0w=="],
 
