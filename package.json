@@ -45,8 +45,8 @@
     "@rhythmjs/security": "^0.0.7"
   },
   "devDependencies": {
-    "@rhythmjs/rhythm": "0.0.14",
-    "@rhythmjs/router": "^0.0.13",
+    "@rhythmjs/rhythm": "0.0.15",
+    "@rhythmjs/router": "^0.0.14",
     "@types/bun": "^1.2.0",
     "@types/node": "^26.6.3",
     "better-auth": "^1.7.7",
@@ -55,8 +55,8 @@
     "typescript": "^7.0.2"
   },
   "peerDependencies": {
-    "@rhythmjs/rhythm": ">=0.0.14",
-    "@rhythmjs/router": ">=0.0.13",
+    "@rhythmjs/rhythm": ">=0.0.15",
+    "@rhythmjs/router": ">=0.0.14",
     "better-auth": "*"
   },
   "engines": {

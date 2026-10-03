@@ -21,8 +21,8 @@ const app = new Rhythm<RhythmHttpContext>()
   .use((ctx) => ctx.json({ email: ctx.user.email }));
 ```
 
-- `betterAuthModule.forRoot({ auth, path? })` mounts `auth.handler` (`path` defaults to `auth.options.basePath`, else `/api/auth`) and provides `auth`. Nothing reaches your context until you export it in the `.register()` callback (`m.auth`).
-- `betterAuthModule.forRootAsync({ useFactory, path? })` builds `auth` from the context it is registered into, for an `auth` that needs things the app provides (a database, a mailer). `useFactory` receives that context, may be async, runs once on the first request, and is retried on the next request if it throws. It provides `auth` and mounts `auth.handler` exactly like `forRoot`:
+- `betterAuthModule.forRoot({ auth, path? })` mounts `auth.handler` (`path` defaults to `auth.options.basePath`, else `/api/auth`) and holds `auth` on its startup context. Nothing reaches your context until you export it in the `.register()` callback (`m.auth`).
+- `betterAuthModule.forRootAsync({ useFactory, path? })` builds `auth` from the context it is registered into, for an `auth` that needs things the app provides (a database, a mailer). `useFactory` receives that context, may be async, runs once on the first request, and is retried on the next request if it throws. It exposes `auth` and mounts `auth.handler` exactly like `forRoot`:
 
   ```ts
   new Rhythm<RhythmHttpContext>()
@@ -50,10 +50,7 @@ The package never touches it. You create the database and the `auth` instance, a
 const database = new Database("auth.db");
 export const auth = betterAuth({ database, emailAndPassword: { enabled: true } });
 
-new Rhythm<RhythmHttpContext>().provide(
-  () => ({}),
-  () => database.close(),
-);
+process.on("SIGTERM", () => database.close());
 ```
 
 Migrations: `getMigrations(auth.options)`.

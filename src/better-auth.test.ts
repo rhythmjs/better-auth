@@ -111,9 +111,10 @@ describe("betterAuthModule.forRootAsync", () => {
     await (await getMigrations(created.options)).runMigrations();
     let calls = 0;
     let received: unknown;
+    const parent = new Rhythm<RhythmHttpContext, { database: Database }>();
+    parent.context.database = database;
     const app = toFetchHandler(
-      new Rhythm<RhythmHttpContext>()
-        .provide(() => ({ database }))
+      parent
         .register(
           betterAuthModule.forRootAsync({
             useFactory: ({ database }: RhythmHttpContext & { database: Database }) => {

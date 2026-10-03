@@ -30,9 +30,9 @@ export function authHandler<TAuth extends Auth<any>>({
 
 export const betterAuthModule = {
   forRoot<TAuth extends Auth<any>>(options: BetterAuthOptions<TAuth>) {
-    return new Rhythm<RhythmHttpContext>({ type: "module", name: "better-auth" })
-      .provide(() => ({ auth: options.auth }))
-      .use(authHandler(options));
+    const module = new Rhythm<RhythmHttpContext, { auth: TAuth }>({ type: "module", name: "better-auth" });
+    module.context.auth = options.auth;
+    return module.use(authHandler(options));
   },
   forRootAsync<TAuth extends Auth<any>, TDeps extends object = {}>(options: BetterAuthAsyncOptions<TAuth, TDeps>) {
     let pending: Promise<TAuth> | undefined;
