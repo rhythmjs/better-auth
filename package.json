@@ -1,7 +1,7 @@
 {
   "name": "@rhythmjs/better-auth",
-  "version": "0.0.4",
-  "description": "Better Auth for Rhythm on Bun: betterAuthModule.forRoot({ auth }) mounts auth.handler and derives session and user onto the context; requireSession guards routes.",
+  "version": "0.0.5",
+  "description": "Better Auth for Rhythm on Bun: betterAuthModule.forRoot({ auth }) holds auth for include(); authHandler mounts auth.handler; withSession derives session and user onto the context; requireSession guards routes.",
   "keywords": [
     "auth",
     "authentication",
@@ -41,12 +41,12 @@
     "check": "bun run fmt:check && bun run lint && bun run typecheck"
   },
   "dependencies": {
-    "@rhythmjs/http": "^0.0.10",
-    "@rhythmjs/security": "^0.0.8"
+    "@rhythmjs/http": "^0.0.11",
+    "@rhythmjs/security": "^0.0.9"
   },
   "devDependencies": {
-    "@rhythmjs/rhythm": "0.0.16",
-    "@rhythmjs/router": "^0.0.16",
+    "@rhythmjs/rhythm": "0.0.20",
+    "@rhythmjs/router": "^0.0.20",
     "@types/bun": "^1.2.0",
     "@types/node": "^26.6.3",
     "better-auth": "^1.7.7",
@@ -55,8 +55,8 @@
     "typescript": "^7.0.2"
   },
   "peerDependencies": {
-    "@rhythmjs/rhythm": ">=0.0.15",
-    "@rhythmjs/router": ">=0.0.14",
+    "@rhythmjs/rhythm": ">=0.0.20",
+    "@rhythmjs/router": ">=0.0.20",
     "better-auth": "*"
   },
   "engines": {

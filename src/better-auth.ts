@@ -1,8 +1,9 @@
 import type { Auth } from "better-auth";
-import { mount } from "@rhythmjs/http/mount";
-import { derive, Rhythm } from "@rhythmjs/rhythm";
-import type { DeriveMiddleware, Middleware } from "@rhythmjs/rhythm/types";
-import type { RhythmHttpContext } from "@rhythmjs/router/adapters/context";
+import { compose, decorate, derive, mount, Rhythm } from "@rhythmjs/rhythm";
+import type { ExtensionMiddleware, Middleware } from "@rhythmjs/rhythm/types";
+import type { RhythmHttpContext } from "@rhythmjs/router/context";
+import { fromFetch } from "@rhythmjs/router/fetch";
+import { pathIs } from "@rhythmjs/router/path";
 export { cors, type CorsOptions } from "@rhythmjs/security/cors";
 
 export interface BetterAuthOptions<TAuth extends Auth<any>> {
@@ -24,17 +25,20 @@ type Session<TAuth extends Auth<any>> = TAuth["$Infer"]["Session"];
 export function authHandler<TAuth extends Auth<any>>({
   auth,
   path = auth.options.basePath ?? "/api/auth",
-}: BetterAuthOptions<TAuth>): Middleware<RhythmHttpContext> {
-  return mount(`${path}/**`, (ctx) => auth.handler(ctx.request));
+}: BetterAuthOptions<TAuth>) {
+  return mount(
+    fromFetch((request) => auth.handler(request)),
+    pathIs(`${path}/**`),
+  );
 }
 
 export const betterAuthModule = {
-  forRoot<TAuth extends Auth<any>>(options: BetterAuthOptions<TAuth>) {
-    const module = new Rhythm<RhythmHttpContext, { auth: TAuth }>({ type: "module", name: "better-auth" });
-    module.context.auth = options.auth;
-    return module.use(authHandler(options));
+  forRoot<TAuth extends Auth<any>>(options: Pick<BetterAuthOptions<TAuth>, "auth">) {
+    return new Rhythm({ name: "better-auth" }).register(decorate(() => ({ auth: options.auth })));
   },
-  forRootAsync<TAuth extends Auth<any>, TDeps extends object = {}>(options: BetterAuthAsyncOptions<TAuth, TDeps>) {
+  forRootAsync<TAuth extends Auth<any>, TDeps extends object = {}>(
+    options: BetterAuthAsyncOptions<TAuth, TDeps>,
+  ): ExtensionMiddleware<RhythmHttpContext & TDeps, { auth: TAuth }> {
     let pending: Promise<TAuth> | undefined;
     let handler: Middleware<RhythmHttpContext> | undefined;
 
@@ -49,12 +53,14 @@ export const betterAuthModule = {
       return pending;
     };
 
-    return new Rhythm<RhythmHttpContext & TDeps>({ type: "module", name: "better-auth" })
-      .use(derive(async (ctx: RhythmHttpContext & TDeps) => ({ auth: await resolve(ctx) })))
-      .use(async (ctx, next) => {
+    const middleware = compose<RhythmHttpContext & TDeps & AuthContext>([
+      derive(async (ctx: RhythmHttpContext & TDeps) => ({ auth: await resolve(ctx) })),
+      async (ctx, next) => {
         handler ??= authHandler({ auth: ctx.auth, path: options.path });
         await handler(ctx, next);
-      });
+      },
+    ]);
+    return middleware as unknown as ExtensionMiddleware<RhythmHttpContext & TDeps, { auth: TAuth }>;
   },
 };
 
@@ -84,7 +90,7 @@ export function requireSession() {
     Object.assign(ctx, { session, user });
     await next();
   };
-  return guard as DeriveMiddleware<
+  return guard as ExtensionMiddleware<
     RhythmHttpContext & AuthContext,
     { session: NonNullable<SessionContext["session"]>; user: NonNullable<SessionContext["user"]> }
   >;
