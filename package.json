@@ -1,6 +1,6 @@
 {
   "name": "@rhythmjs/better-auth",
-  "version": "0.0.6",
+  "version": "0.0.7",
   "description": "Better Auth for Rhythm on Bun: betterAuthModule.forRoot({ auth }) holds auth for include(); authHandler mounts auth.handler; withSession derives session and user onto the context; requireSession guards routes.",
   "keywords": [
     "auth",
@@ -31,6 +31,8 @@
     "access": "public"
   },
   "scripts": {
+    "clean": "rm -rf dist",
+    "prebuild": "bun run clean",
     "build": "bun build src/better-auth.ts --outdir dist --root src --format esm --target bun --packages external && tsc -p tsconfig.build.json",
     "prepublishOnly": "bun run check && bun test && bun run build",
     "typecheck": "tsc --noEmit",
@@ -41,12 +43,12 @@
     "check": "bun run fmt:check && bun run lint && bun run typecheck"
   },
   "dependencies": {
-    "@rhythmjs/http": "^0.0.12",
-    "@rhythmjs/security": "^0.0.10"
+    "@rhythmjs/http": "^0.0.13",
+    "@rhythmjs/security": "^0.0.11"
   },
   "devDependencies": {
-    "@rhythmjs/rhythm": "0.0.20",
-    "@rhythmjs/router": "^0.0.20",
+    "@rhythmjs/rhythm": "0.0.21",
+    "@rhythmjs/router": "^0.0.21",
     "@types/bun": "^1.2.0",
     "@types/node": "^26.6.3",
     "better-auth": "^1.7.7",
