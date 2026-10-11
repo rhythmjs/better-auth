@@ -4,6 +4,7 @@ import type { ExtensionMiddleware, Middleware } from "@rhythmjs/rhythm/types";
 import type { RhythmHttpContext } from "@rhythmjs/router/context";
 import { fromFetch } from "@rhythmjs/router/fetch";
 import { pathIs } from "@rhythmjs/router/path";
+import { error } from "@rhythmjs/router/response";
 export { cors, type CorsOptions } from "@rhythmjs/security/cors";
 
 export interface BetterAuthOptions<TAuth extends Auth<any>> {
@@ -84,7 +85,7 @@ export function requireSession() {
   const guard: Middleware<RhythmHttpContext & AuthContext> = async (ctx, next) => {
     const { session, user } = await lookup(ctx);
     if (!session || !user) {
-      ctx.error(401, "Unauthorized");
+      error(ctx, 401, "Unauthorized");
       return;
     }
     Object.assign(ctx, { session, user });

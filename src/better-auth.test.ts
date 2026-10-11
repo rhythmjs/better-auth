@@ -6,6 +6,7 @@ import { decorate, include, Rhythm } from "@rhythmjs/rhythm";
 import type { RhythmHttpContext } from "@rhythmjs/router/context";
 import { toFetchHandler } from "@rhythmjs/router/fetch";
 import { betterAuthModule, requireSession, withSession, cors, authHandler } from "./better-auth";
+import { json } from "@rhythmjs/router/response";
 
 const auth = betterAuth({
   database: new Database(":memory:"),
@@ -22,7 +23,7 @@ const handler = toFetchHandler(
     .register(include(betterAuthModule.forRoot({ auth }), (m) => ({ auth: m.auth })))
     .use(authHandler({ auth }))
     .use(requireSession())
-    .use((ctx) => ctx.json({ email: ctx.user.email })),
+    .use((ctx) => json(ctx, { email: ctx.user.email })),
 );
 
 beforeAll(async () => {
@@ -57,7 +58,7 @@ describe("betterAuthModule", () => {
 
   test("authHandler works as a plain middleware, without the module", async () => {
     const app = toFetchHandler(
-      new Rhythm<{}, RhythmHttpContext>().use(authHandler({ auth })).use((ctx) => ctx.json({ fellThrough: true })),
+      new Rhythm<{}, RhythmHttpContext>().use(authHandler({ auth })).use((ctx) => json(ctx, { fellThrough: true })),
     );
 
     expect((await app(new Request("http://localhost/api/auth/ok"))).status).toBe(200);
@@ -89,7 +90,7 @@ describe("betterAuthModule", () => {
       new Rhythm<{}, RhythmHttpContext>()
         .register(include(betterAuthModule.forRoot({ auth }), (m) => ({ auth: m.auth })))
         .use(withSession())
-        .use((ctx) => ctx.json({ user: ctx.user, session: ctx.session })),
+        .use((ctx) => json(ctx, { user: ctx.user, session: ctx.session })),
     );
 
     const res = await app(new Request("http://localhost/x"));
@@ -125,7 +126,7 @@ describe("betterAuthModule.forRootAsync", () => {
           }),
         )
         .use(withSession())
-        .use((ctx) => ctx.json({ hasAuth: typeof ctx.auth.handler, user: ctx.user })),
+        .use((ctx) => json(ctx, { hasAuth: typeof ctx.auth.handler, user: ctx.user })),
     );
 
     const res = await app(new Request("http://localhost/x"));

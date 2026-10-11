@@ -10,7 +10,7 @@ put `ctx.session` and `ctx.user` on the request context. You create and own the 
 bun add @rhythmjs/better-auth @rhythmjs/rhythm @rhythmjs/router better-auth
 ```
 
-Peer dependencies: `@rhythmjs/rhythm >=0.0.20`, `@rhythmjs/router >=0.0.20`, `better-auth` (any version; developed
+Peer dependencies: `@rhythmjs/rhythm >=0.0.24`, `@rhythmjs/router >=0.0.24`, `better-auth` (any version; developed
 against 1.7). Requires Bun >=1.2. `@rhythmjs/http` and `@rhythmjs/security` are regular dependencies and install
 automatically.
 
@@ -23,6 +23,7 @@ import { include, Rhythm } from "@rhythmjs/rhythm";
 import type { RhythmHttpContext } from "@rhythmjs/router/context";
 import { toFetchHandler } from "@rhythmjs/router/fetch";
 import { authHandler, betterAuthModule, requireSession } from "@rhythmjs/better-auth";
+import { json } from "@rhythmjs/router/response";
 
 const auth = betterAuth({
   database: new Database("auth.db"),
@@ -36,7 +37,7 @@ const app = new Rhythm<{}, RhythmHttpContext>()
   .use(authHandler({ auth }))
   // reads ctx.auth: 401 without a session, else sets ctx.session and ctx.user
   .use(requireSession())
-  .use((ctx) => ctx.json({ email: ctx.user.email }));
+  .use((ctx) => json(ctx, { email: ctx.user.email }));
 
 Bun.serve({ fetch: toFetchHandler(app) });
 ```
@@ -82,6 +83,7 @@ throws or rejects, the failure surfaces on that request and the factory is retri
 import { decorate, Rhythm } from "@rhythmjs/rhythm";
 import type { RhythmHttpContext } from "@rhythmjs/router/context";
 import { betterAuthModule, withSession } from "@rhythmjs/better-auth";
+import { json } from "@rhythmjs/router/response";
 
 const app = new Rhythm<{}, RhythmHttpContext>()
   .register(decorate(() => ({ database: openDatabase() })))
@@ -91,7 +93,7 @@ const app = new Rhythm<{}, RhythmHttpContext>()
     }),
   )
   .use(withSession())
-  .use((ctx) => ctx.json({ user: ctx.user }));
+  .use((ctx) => json(ctx, { user: ctx.user }));
 ```
 
 ### `withSession()`
